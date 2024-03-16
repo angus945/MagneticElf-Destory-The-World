@@ -1,0 +1,3 @@
+[submodule "Assets/AngusChanToolkit"]
+	path = Assets/AngusChanToolkit
+	url = https://github.com/angus945/AngusChanToolkit.git
