@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7399824138444004383}
   - component: {fileID: 7399824138444004354}
   - component: {fileID: 7399824138444004355}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Brick_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 28ada9cdf9cfd4b409dddeaef0bbbeca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,5 +127,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d89c98271d7c1d54e822601098a0ddb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 2
+  health: 2
   dropItem: {fileID: 330539720787191038, guid: 72f701ee5009b0740a0c0983c7b25316, type: 3}
-  health: 1
+  ballLayer:
+    serializedVersion: 2
+    m_Bits: 512
+  fireRadius: 1
+  fireRate: 0.5
+  bulletPrefab: {fileID: 8752120880117569855, guid: 5a7b5f1012fc2a248aacd9a009853a57, type: 3}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using AngusChanToolkit.Unity;
@@ -11,6 +12,9 @@ public class GlobalEvent_PickUpItem : EventArgs_Global
 public class Ball : MonoBehaviour
 {
     public string ballName;
+
+    [SerializeField] int maxHealth;
+    [SerializeField] int health;
 
     public Vector3 direction;
     [SerializeField] float speed;
@@ -56,6 +60,17 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.TryGetComponent<BrickBase>(out BrickBase brick))
         {
             brick.Damage(1);
+        }
+    }
+
+    public void Damage(int damage)
+    {
+        health -= damage;
+        GlobalOberserver.TriggerEvent(this, new GlobalEvent_HealthUpdated(transform, health, maxHealth));
+
+        if (health <= 0)
+        {
+            Destroy(gameObject);
         }
     }
 }

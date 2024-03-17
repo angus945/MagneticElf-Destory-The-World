@@ -28,7 +28,6 @@ public class PlayerResources : MonoBehaviour
 
     void Event_OnPickUpItem(object sender, EventArgs e)
     {
-        // GlobalEvent_PickUpItem e2 = (GlobalEvent_PickUpItem)e;
         itemCount++;
 
         if (itemCount > 5)
