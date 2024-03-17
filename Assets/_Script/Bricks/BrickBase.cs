@@ -19,6 +19,7 @@ public class BrickBase : MonoBehaviour
     public int health;
     public Item dropItem;
 
+    public Transform firePoint;
     public LayerMask ballLayer;
     public float fireRadius;
     public float fireRate;
@@ -36,9 +37,9 @@ public class BrickBase : MonoBehaviour
             {
                 fireTimer = 0;
 
-                Vector3 direction = (colliders[0].transform.position - transform.position).normalized;
-                BrickBullet bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
-                direction.y = 0;
+                Vector3 direction = (colliders[0].transform.position - firePoint.position).normalized;
+                BrickBullet bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+                // direction.y = 0;
                 bullet.direction = direction;
             }
         }

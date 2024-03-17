@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using AngusChanToolkit.Unity;
 using UnityEngine;
 
+internal class GlobalEvent_PlayerDead : EventArgs_Global
+{
+    public GlobalEvent_PlayerDead()
+    {
+    }
+}
 public class GlobalEvent_AddBall : EventArgs_Global
 {
     public string ball;
@@ -43,6 +49,10 @@ public class Inventory
 public class Paddle : MonoBehaviour
 {
     public static Paddle instance;
+
+    [Header("Paddle Health")]
+    [SerializeField] int maxHealth;
+    [SerializeField] int health;
 
     [Header("Paddle Movement")]
     [SerializeField] float speed;
@@ -107,6 +117,18 @@ public class Paddle : MonoBehaviour
         rb.MovePosition(target);
     }
 
+    public void Damage(int damage)
+    {
+        health -= damage;
+
+        GlobalOberserver.TriggerEvent(this, new GlobalEvent_HealthUpdated(transform, health, maxHealth));
+
+        if (health <= 0)
+        {
+            GlobalOberserver.TriggerEvent(this, new GlobalEvent_PlayerDead());
+        }
+    }
+
     IEnumerator ShootBalls()
     {
         foreach (var inventory in inventories)
@@ -126,7 +148,7 @@ public class Paddle : MonoBehaviour
     {
         moveTargetZ += 1;
     }
-    private void Event_OnAddBall(object sender, EventArgs e)
+    void Event_OnAddBall(object sender, EventArgs e)
     {
         GlobalEvent_AddBall addBall = e as GlobalEvent_AddBall;
         foreach (var inventory in inventories)
@@ -139,4 +161,6 @@ public class Paddle : MonoBehaviour
 
     }
 
+
 }
+

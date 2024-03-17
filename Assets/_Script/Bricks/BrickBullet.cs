@@ -30,6 +30,10 @@ public class BrickBullet : MonoBehaviour
         {
             ball.Damage(damage);
         }
+        if (other.TryGetComponent(out Paddle paddle))
+        {
+            paddle.Damage(damage);
+        }
 
         Destroy(gameObject);
     }

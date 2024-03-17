@@ -882,7 +882,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 836483754}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShootPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1438,7 +1438,7 @@ GameObject:
   - component: {fileID: 1290343461}
   - component: {fileID: 1290343465}
   - component: {fileID: 1290343466}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Paddle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1552,6 +1552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98ed0f41503a2af48b9da2f214c90f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 20
+  health: 20
   speed: 6
   groundLayer:
     serializedVersion: 2
@@ -1661,6 +1663,7 @@ MonoBehaviour:
   brickParent: {fileID: 809130542}
   brickPrefabs:
   - {fileID: 7399824138444004355, guid: 4c00184c4f38a6543a348bd3911f9f96, type: 3}
+  - {fileID: 7399824138444004355, guid: 57445775abc0f4349b00ca7048646af7, type: 3}
 --- !u!4 &1806453425
 Transform:
   m_ObjectHideFlags: 0

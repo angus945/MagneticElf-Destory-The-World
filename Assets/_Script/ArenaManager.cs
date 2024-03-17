@@ -37,14 +37,14 @@ public class ArenaManager : MonoBehaviour
         PushAreanWithDistance();
 
         //Testing
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            for (int i = bricks.Count - 1; i >= 0; i--)
-            {
-                BrickBase brick = bricks[i];
-                brick.Damage(100);
-            }
-        }
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     for (int i = bricks.Count - 1; i >= 0; i--)
+        //     {
+        //         BrickBase brick = bricks[i];
+        //         brick.Damage(100);
+        //     }
+        // }
     }
     void PushArenaWithTime()
     {
@@ -95,10 +95,13 @@ public class ArenaManager : MonoBehaviour
             Vector3 brickPosition = new Vector3(i - arenaWidth / 2f + 0.5f, 0, position.z);
             int index = UnityEngine.Random.Range(0, brickPrefabs.Length);
 
-            BrickBase brick = Instantiate(brickPrefabs[index], brickPosition, Quaternion.identity);
-            brick.transform.parent = brickParent;
+            if (UnityEngine.Random.value > 0.5f)
+            {
+                BrickBase brick = Instantiate(brickPrefabs[index], brickPosition, Quaternion.identity);
+                brick.transform.parent = brickParent;
 
-            bricks.Add(brick);
+                bricks.Add(brick);
+            }
         }
     }
 
