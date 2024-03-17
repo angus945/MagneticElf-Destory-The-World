@@ -13,12 +13,32 @@ public class GlobalEvent_AddBall : EventArgs_Global
         this.ball = ball;
     }
 }
+public class GlobalEvent_BallCountChange : EventArgs_Global
+{
+    public string ball;
+    public int count;
+
+    public GlobalEvent_BallCountChange(string ball, int count)
+    {
+        this.ball = ball;
+        this.count = count;
+    }
+}
 
 [System.Serializable]
 public class Inventory
 {
     public Ball ball;
-    public int count;
+    public int count
+    {
+        get { return _count; }
+        set
+        {
+            _count = value; GlobalOberserver.TriggerEvent(this, new GlobalEvent_BallCountChange(ball.ballName, _count));
+        }
+    }
+
+    public int _count;
 }
 public class Paddle : MonoBehaviour
 {
@@ -116,6 +136,7 @@ public class Paddle : MonoBehaviour
                 inventory.count++;
             }
         }
+
     }
 
 }

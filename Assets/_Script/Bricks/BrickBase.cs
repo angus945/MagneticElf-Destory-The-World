@@ -15,6 +15,8 @@ public class GlobalEvent_BrickBreak : EventArgs_Global
 }
 public class BrickBase : MonoBehaviour
 {
+    public Item dropItem;
+
     public int health;
 
     public void Damage(int damage)
@@ -23,6 +25,12 @@ public class BrickBase : MonoBehaviour
         if (health <= 0)
         {
             GlobalOberserver.TriggerEvent<GlobalEvent_BrickBreak>(this, new GlobalEvent_BrickBreak(this));
+
+            if (dropItem != null)
+            {
+                Instantiate(dropItem, transform.position, Quaternion.identity);
+            }
+
             Destroy(gameObject);
         }
     }

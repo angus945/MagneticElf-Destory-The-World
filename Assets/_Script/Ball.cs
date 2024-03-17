@@ -4,12 +4,19 @@ using AngusChanToolkit.Unity;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public class GlobalEvent_PickUpItem : EventArgs_Global
+{
+
+}
 public class Ball : MonoBehaviour
 {
     public string ballName;
 
     public Vector3 direction;
     [SerializeField] float speed;
+
+    public LayerMask itemLayer;
+    public float pickupRadius;
 
     Rigidbody rigidbody;
 
@@ -24,6 +31,16 @@ public class Ball : MonoBehaviour
         {
             GlobalOberserver.TriggerEvent(this, new GlobalEvent_AddBall(ballName));
             Destroy(gameObject);
+        }
+
+        Collider[] colliders = Physics.OverlapSphere(transform.position, pickupRadius, itemLayer);
+        if (colliders.Length > 0)
+        {
+            if (colliders[0].TryGetComponent<Item>(out Item item))
+            {
+                GlobalOberserver.TriggerEvent(this, new GlobalEvent_PickUpItem());
+                Destroy(colliders[0].gameObject);
+            }
         }
     }
     void FixedUpdate()
