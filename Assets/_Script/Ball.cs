@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using AngusChanToolkit.Unity;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    public string ballName;
+
     public Vector3 direction;
     [SerializeField] float speed;
 
@@ -14,7 +17,15 @@ public class Ball : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
     }
-
+    void Update()
+    {
+        float distance = Vector3.Distance(transform.position, Paddle.instance.transform.position);
+        if (distance > 30)
+        {
+            GlobalOberserver.TriggerEvent(this, new GlobalEvent_AddBall(ballName));
+            Destroy(gameObject);
+        }
+    }
     void FixedUpdate()
     {
         Vector3 velocity = direction * speed;

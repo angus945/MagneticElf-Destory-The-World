@@ -1,6 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using AngusChanToolkit.Unity;
 using UnityEngine;
+
+public class GlobalEvent_AddBall : EventArgs_Global
+{
+    public string ball;
+
+    public GlobalEvent_AddBall(string ball)
+    {
+        this.ball = ball;
+    }
+}
 
 [System.Serializable]
 public class Inventory
@@ -10,9 +22,12 @@ public class Inventory
 }
 public class Paddle : MonoBehaviour
 {
+    public static Paddle instance;
+
     [Header("Paddle Movement")]
     [SerializeField] float speed;
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] float pushDuration;
 
     [Header("Paddle Shooting")]
     [SerializeField] Inventory[] inventories;
@@ -21,13 +36,21 @@ public class Paddle : MonoBehaviour
 
     Rigidbody rb;
 
-    Vector3 moveTarget;
+    float moveTargetX;
+    float moveTargetZ;
 
     Coroutine shootCoroutine;
 
+    void Awake()
+    {
+        instance = this;
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        GlobalOberserver.AddListener<GlobalEvent_ArenaPush>(Event_OnArenaPush);
+        GlobalOberserver.AddListener<GlobalEvent_AddBall>(Event_OnAddBall);
     }
     void Update()
     {
@@ -36,7 +59,7 @@ public class Paddle : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 100, groundLayer))
             {
-                moveTarget = new Vector3(hit.point.x, transform.position.y, transform.position.z);
+                moveTargetX = hit.point.x;
             }
         }
         if (Input.GetMouseButtonDown(1))
@@ -50,13 +73,18 @@ public class Paddle : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (Vector3.Distance(transform.position, moveTarget) > 0.1f)
+        Vector3 target = transform.position;
+        if (Mathf.Abs(transform.position.x - moveTargetX) > 0.1f)
         {
-            Vector3 direction = (moveTarget - transform.position).normalized;
-            direction.y = 0;
-            direction.z = 0;
-            rb.MovePosition(transform.position + direction * speed * Time.fixedDeltaTime);
+            float direction = Mathf.Sign(moveTargetX - transform.position.x);
+            target += new Vector3(direction, 0, 0) * speed * Time.fixedDeltaTime;
         }
+
+        if (transform.position.z < moveTargetZ)
+        {
+            target += Vector3.forward * speed * Time.fixedDeltaTime;
+        }
+        rb.MovePosition(target);
     }
 
     IEnumerator ShootBalls()
@@ -70,6 +98,22 @@ public class Paddle : MonoBehaviour
                 inventory.count--;
 
                 yield return new WaitForSeconds(shootInterval);
+            }
+        }
+    }
+
+    void Event_OnArenaPush(object sender, EventArgs e)
+    {
+        moveTargetZ += 1;
+    }
+    private void Event_OnAddBall(object sender, EventArgs e)
+    {
+        GlobalEvent_AddBall addBall = e as GlobalEvent_AddBall;
+        foreach (var inventory in inventories)
+        {
+            if (inventory.ball.ballName == addBall.ball)
+            {
+                inventory.count++;
             }
         }
     }

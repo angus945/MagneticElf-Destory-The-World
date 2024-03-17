@@ -17,7 +17,9 @@ public class ArenaManager : MonoBehaviour
 
     [Space]
     [SerializeField] int pushDistance;
+    [SerializeField] float pushTime;
     int currentDistance;
+    float pushTimer;
 
     [SerializeField] Transform brickParent;
     [SerializeField] BrickBase[] brickPrefabs;
@@ -29,6 +31,41 @@ public class ArenaManager : MonoBehaviour
 
         GlobalOberserver.AddListener<GlobalEvent_BrickBreak>(Event_OnBrickBreak);
     }
+    void Update()
+    {
+        PushArenaWithTime();
+        PushAreanWithDistance();
+
+        //Testing
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            for (int i = bricks.Count - 1; i >= 0; i--)
+            {
+                BrickBase brick = bricks[i];
+                brick.Damage(100);
+            }
+        }
+    }
+    void PushArenaWithTime()
+    {
+        pushTimer += Time.deltaTime;
+        if (pushTimer > pushTime)
+        {
+            pushTimer = 0;
+            GenerateArena(true);
+            GlobalOberserver.TriggerEvent(this, new GlobalEvent_ArenaPush());
+        }
+    }
+    void PushAreanWithDistance()
+    {
+        int distance = GetBrickDistance();
+        if (distance < pushDistance)
+        {
+            GenerateArena(true);
+            GlobalOberserver.TriggerEvent(this, new GlobalEvent_ArenaPush());
+        }
+    }
+
     void GenerateArenas()
     {
         for (int i = 0; i < arenaLength; i++)
@@ -41,7 +78,8 @@ public class ArenaManager : MonoBehaviour
     {
         Vector3 position = new Vector3(0, 0, currentDistance);
         GameObject arena = Instantiate(areanPrefab, position, Quaternion.identity);
-        arena.transform.parent = arenaParent; ;
+        arena.transform.parent = arenaParent;
+        arena.name = "Arena " + currentDistance;
 
         if (spawnBrick)
         {
@@ -66,12 +104,13 @@ public class ArenaManager : MonoBehaviour
 
     int GetBrickDistance()
     {
-        int distance = 0;
+        int closed = int.MaxValue;
         foreach (var brick in bricks)
         {
-            distance = Mathf.Min(distance, (int)brick.transform.position.z);
+            closed = Mathf.Min(closed, (int)brick.transform.position.z);
         }
-        return distance;
+
+        return currentDistance - closed;
     }
 
     void Event_OnBrickBreak(object sender, EventArgs e)
