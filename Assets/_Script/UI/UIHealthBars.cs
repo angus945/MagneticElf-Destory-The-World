@@ -41,9 +41,8 @@ public class UIHealthBars : MonoBehaviour
     void ActiveHealthBar(object sender, EventArgs e)
     {
         GlobalEvent_HealthUpdated args = e as GlobalEvent_HealthUpdated;
-        UIHealthBar bar;
 
-        if (activeHealthBar.TryGetValue(args.target, out bar))
+        if (activeHealthBar.TryGetValue(args.target, out UIHealthBar bar))
         {
             bar.SetTarget(args.target, args.health / (float)args.maxHealth);
 
@@ -58,9 +57,9 @@ public class UIHealthBars : MonoBehaviour
         {
             if (args.health <= 0)
             {
-                activeHealthBar.Remove(args.target);
-                bar.gameObject.SetActive(false);
-                pool.Enqueue(bar);
+                // activeHealthBar.Remove(args.target);
+                // bar.gameObject.SetActive(false);
+                // pool.Enqueue(bar);
             }
             else
             {

@@ -16,7 +16,8 @@ public class PickupBall : MonoBehaviour
                 GlobalOberserver.TriggerEvent(this, new GlobalEvent_AddBall(ball.ballName));
             }
 
-            Destroy(collision.gameObject);
+            ball.Damage(100);
+            // Destroy(collision.gameObject);
         }
     }
 

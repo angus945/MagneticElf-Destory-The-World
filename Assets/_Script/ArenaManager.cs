@@ -35,16 +35,6 @@ public class ArenaManager : MonoBehaviour
     {
         PushArenaWithTime();
         PushAreanWithDistance();
-
-        //Testing
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     for (int i = bricks.Count - 1; i >= 0; i--)
-        //     {
-        //         BrickBase brick = bricks[i];
-        //         brick.Damage(100);
-        //     }
-        // }
     }
     void PushArenaWithTime()
     {
@@ -90,12 +80,15 @@ public class ArenaManager : MonoBehaviour
     }
     void GenerateBricks(Vector3 position)
     {
+        float instanceProbability = Mathf.Max(0.3f, (currentDistance - 10) / 30f);
+        Debug.Log(instanceProbability);
+
         for (int i = 0; i < arenaWidth; i++)
         {
             Vector3 brickPosition = new Vector3(i - arenaWidth / 2f + 0.5f, 0, position.z);
             int index = UnityEngine.Random.Range(0, brickPrefabs.Length);
 
-            if (UnityEngine.Random.value > 0.5f)
+            if (instanceProbability > UnityEngine.Random.value)
             {
                 BrickBase brick = Instantiate(brickPrefabs[index], brickPosition, Quaternion.identity);
                 brick.transform.parent = brickParent;

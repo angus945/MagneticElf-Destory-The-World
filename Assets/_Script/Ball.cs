@@ -9,6 +9,10 @@ public class GlobalEvent_PickUpItem : EventArgs_Global
 {
 
 }
+public class GlobalEvent_BallDeath : EventArgs_Global
+{
+
+}
 public class Ball : MonoBehaviour
 {
     public string ballName;
@@ -52,11 +56,19 @@ public class Ball : MonoBehaviour
         Vector3 velocity = direction * speed;
         rigidbody.MovePosition(velocity * Time.fixedDeltaTime + transform.position);
     }
+    void OnDestroy()
+    {
+        GlobalOberserver.TriggerEvent(this, new GlobalEvent_BallDeath());
+    }
 
     void OnCollisionEnter(Collision collision)
     {
         direction = Vector3.Reflect(direction, collision.contacts[0].normal);
 
+        if (collision.gameObject.TryGetComponent<Paddle>(out Paddle paddle))
+        {
+            direction.z = Mathf.Abs(direction.z);
+        }
         if (collision.gameObject.TryGetComponent<BrickBase>(out BrickBase brick))
         {
             brick.Damage(1);

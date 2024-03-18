@@ -6,8 +6,11 @@ using UnityEngine;
 
 internal class GlobalEvent_PlayerDead : EventArgs_Global
 {
-    public GlobalEvent_PlayerDead()
+    public int distance;
+
+    public GlobalEvent_PlayerDead(int distance)
     {
+        this.distance = distance;
     }
 }
 public class GlobalEvent_AddBall : EventArgs_Global
@@ -70,6 +73,7 @@ public class Paddle : MonoBehaviour
     float moveTargetZ;
 
     Coroutine shootCoroutine;
+    int activeBallCount;
 
     void Awake()
     {
@@ -81,7 +85,11 @@ public class Paddle : MonoBehaviour
 
         GlobalOberserver.AddListener<GlobalEvent_ArenaPush>(Event_OnArenaPush);
         GlobalOberserver.AddListener<GlobalEvent_AddBall>(Event_OnAddBall);
+        GlobalOberserver.AddListener<GlobalEvent_BallDeath>(Event_OnBallDeath);
     }
+
+
+
     void Update()
     {
         if (Input.GetMouseButton(0))
@@ -125,7 +133,7 @@ public class Paddle : MonoBehaviour
 
         if (health <= 0)
         {
-            GlobalOberserver.TriggerEvent(this, new GlobalEvent_PlayerDead());
+            GlobalOberserver.TriggerEvent(this, new GlobalEvent_PlayerDead((int)moveTargetZ));
         }
     }
 
@@ -138,6 +146,7 @@ public class Paddle : MonoBehaviour
                 Ball ball = Instantiate(inventory.ball, transform.position + shootPoint.localPosition, Quaternion.identity);
                 ball.direction = new Vector3(1, 0, 1).normalized;
                 inventory.count--;
+                activeBallCount++;
 
                 yield return new WaitForSeconds(shootInterval);
             }
@@ -159,6 +168,15 @@ public class Paddle : MonoBehaviour
             }
         }
 
+    }
+    private void Event_OnBallDeath(object sender, EventArgs e)
+    {
+        activeBallCount--;
+
+        if (activeBallCount <= 0)
+        {
+            GlobalOberserver.TriggerEvent(this, new GlobalEvent_PlayerDead((int)moveTargetZ));
+        }
     }
 
 
